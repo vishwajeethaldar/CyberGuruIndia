@@ -6,6 +6,7 @@
 <main class="container py-4" style="max-width: 850px;">
   <h1 class="h3 mb-3"><%= video ? 'Edit Video' : 'Add Video' %></h1>
   <form method="POST" action="<%= action %>" enctype="multipart/form-data" class="card card-body shadow-sm">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
     <div class="mb-3">
       <label class="form-label d-flex align-items-center gap-2">
         <span aria-hidden="true">🖼️</span>
@@ -76,11 +77,14 @@ function removeThumbnail(videoId) {
   if (!confirm('Are you sure you want to remove this thumbnail?')) {
     return;
   }
+
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
   
   fetch(`/admin/videos/${videoId}/thumbnail`, {
     method: 'DELETE',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': csrfToken,
     }
   })
   .then(response => response.json())

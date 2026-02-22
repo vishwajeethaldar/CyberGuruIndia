@@ -7,6 +7,7 @@
   <h1 class="h3 mb-3">Menu Settings</h1>
 
   <form class="card card-body" method="POST" action="/admin/menu-settings?_method=PUT">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
     <div class="form-check mb-3">
       <input class="form-check-input" type="checkbox" id="showVideosMenu" name="showVideosMenu" <%= menuSettings.showVideosMenu ? 'checked' : '' %> />
       <label class="form-check-label" for="showVideosMenu">Show Videos menu</label>

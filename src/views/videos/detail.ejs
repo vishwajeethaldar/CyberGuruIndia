@@ -29,6 +29,7 @@
         <h2 class="h4">Discussion</h2>
         <% if (video.discussionEnabled) { %>
           <form action="/videos/<%= video.slug %>/comments" method="POST" class="card card-body mb-4">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             <div class="mb-2">
               <label class="form-label">Name</label>
               <input class="form-control" type="text" name="authorName" required maxlength="80" />
@@ -59,6 +60,7 @@
 
                 <% if (video.discussionEnabled) { %>
                   <form action="/videos/<%= video.slug %>/comments" method="POST" class="border rounded p-2 mb-2">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                     <input type="hidden" name="parentCommentId" value="<%= comment._id %>" />
                     <div class="row g-2">
                       <div class="col-md-4"><input class="form-control form-control-sm" type="text" name="authorName" placeholder="Your name" required /></div>

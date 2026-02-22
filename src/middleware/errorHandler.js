@@ -4,6 +4,16 @@ function notFoundHandler(req, res) {
 
 function errorHandler(err, req, res, next) {
   console.error(err);
+  if (err.code === 'EBADCSRFTOKEN' || err.name === 'CSRFError') {
+    if (req.xhr || req.headers.accept === 'application/json') {
+      return res.status(403).json({ message: 'Invalid CSRF token.' });
+    }
+    return res.status(403).render('errors/403', {
+      title: 'Forbidden',
+      message: 'Invalid CSRF token. Please refresh the page and try again.',
+    });
+  }
+
   const statusCode = err.status || 500;
 
   if (res.headersSent) return next(err);

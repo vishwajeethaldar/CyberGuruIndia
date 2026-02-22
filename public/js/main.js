@@ -1,7 +1,15 @@
+function getCsrfToken() {
+  const meta = document.querySelector('meta[name="csrf-token"]');
+  return meta ? meta.getAttribute('content') : '';
+}
+
 async function postVote(url, type) {
   const response = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': getCsrfToken(),
+    },
     body: JSON.stringify({ type }),
   });
 

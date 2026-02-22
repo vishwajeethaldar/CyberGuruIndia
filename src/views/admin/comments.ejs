@@ -54,14 +54,17 @@
             <td class="text-end">
               <% if (comment.status === 'approved') { %>
                 <form class="d-inline" method="POST" action="/admin/comments/<%= comment._id %>/block?_method=PUT">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                   <button class="btn btn-sm btn-outline-warning">Block</button>
                 </form>
               <% } else { %>
                 <form class="d-inline" method="POST" action="/admin/comments/<%= comment._id %>/approve?_method=PUT">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                   <button class="btn btn-sm btn-outline-success">Unblock</button>
                 </form>
               <% } %>
               <form class="d-inline" method="POST" action="/admin/comments/<%= comment._id %>?_method=DELETE">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                 <button class="btn btn-sm btn-outline-danger">Delete</button>
               </form>
             </td>

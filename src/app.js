@@ -9,6 +9,8 @@ const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
 const methodOverride = require('method-override');
+const cookieParser = require('cookie-parser');
+const { doubleCsrf } = require('csrf-csrf');
 const MenuSettings = require('./models/MenuSettings');
 const { stripHtmlTags } = require('./utils/textHelpers');
 const { markdownToHtml, markdownToText } = require('./utils/markdown');
@@ -32,7 +34,22 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(
   helmet({
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net', 'https://cdn.quilljs.com'],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net', 'https://cdn.quilljs.com'],
+        imgSrc: ["'self'", 'data:', 'https://img.youtube.com', 'https://placehold.co'],
+        fontSrc: ["'self'", 'https://cdn.jsdelivr.net'],
+        connectSrc: ["'self'"],
+        frameSrc: ['https://www.youtube.com'],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+        frameAncestors: ["'self'"],
+      },
+    },
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
   })
 );
@@ -41,6 +58,7 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride('_method'));
+app.use(cookieParser());
 app.use(express.static(path.join(process.cwd(), 'public')));
 
 const sessionStoreOptions = mongoose.connection.readyState === 1
@@ -65,12 +83,30 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
+const { doubleCsrfProtection, generateToken } = doubleCsrf({
+  getSecret: () => process.env.SESSION_SECRET || 'change-me',
+  cookieName: '__Host-csrf',
+  cookieOptions: {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+  },
+  getTokenFromRequest: (req) => req.body?._csrf || req.headers['x-csrf-token'],
+});
+
+app.use((req, res, next) => {
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return next();
+  return doubleCsrfProtection(req, res, next);
+});
+
 app.use((req, res, next) => {
   res.locals.currentUser = req.user || null;
   res.locals.siteName = process.env.SITE_NAME || 'CyberGuruIndia';
   res.locals.siteBaseUrl = `${req.protocol}://${req.get('host')}`;
   res.locals.flashSuccess = req.flash('success');
   res.locals.flashError = req.flash('error');
+  res.locals.csrfToken = generateToken(res, req);
   res.locals.stripHtmlTags = stripHtmlTags;
   res.locals.markdownToHtml = markdownToHtml;
   res.locals.stripMarkdown = markdownToText;

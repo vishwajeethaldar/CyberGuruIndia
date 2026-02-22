@@ -53,6 +53,7 @@
             <td class="text-end">
               <a class="btn btn-sm btn-outline-primary" href="/admin/videos/<%= video._id %>/edit">Edit</a>
               <form class="d-inline" method="POST" action="/admin/videos/<%= video._id %>?_method=DELETE">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                 <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this video?')">Delete</button>
               </form>
             </td>

@@ -6,16 +6,17 @@
     </button>
     <div class="collapse navbar-collapse" id="mainNav">
       <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-        <% if (!menuSettings || menuSettings.showVideosMenu) { %>
+        <% if (typeof menuSettings === 'undefined' || !menuSettings || menuSettings.showVideosMenu) { %>
           <li class="nav-item"><a class="nav-link" href="/videos">Videos</a></li>
         <% } %>
-        <% if (!menuSettings || menuSettings.showBlogsMenu) { %>
+        <% if (typeof menuSettings === 'undefined' || !menuSettings || menuSettings.showBlogsMenu) { %>
           <li class="nav-item"><a class="nav-link" href="/blogs">Blogs</a></li>
         <% } %>
         <% if (currentUser && currentUser.role === 'admin') { %>
           <li class="nav-item"><a class="nav-link" href="/admin/dashboard">Dashboard</a></li>
           <li class="nav-item">
             <form action="/admin/logout" method="POST">
+              <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>" />
               <button class="btn btn-outline-light btn-sm" type="submit">Logout</button>
             </form>
           </li>

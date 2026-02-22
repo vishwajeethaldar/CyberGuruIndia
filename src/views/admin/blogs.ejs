@@ -23,6 +23,7 @@
             <td class="text-end">
               <a class="btn btn-sm btn-outline-primary" href="/admin/blogs/<%= blog._id %>/edit">Edit</a>
               <form class="d-inline" method="POST" action="/admin/blogs/<%= blog._id %>?_method=DELETE">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                 <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this blog?')">Delete</button>
               </form>
             </td>
