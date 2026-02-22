@@ -1,0 +1,48 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+<%- include('../partials/alerts') %>
+
+<main class="container py-4">
+  <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+    <h1 class="h3 mb-0">CyberGuruIndia Blogs</h1>
+    <form class="row g-2" method="GET" action="/blogs">
+      <div class="col-auto">
+        <input type="text" class="form-control" name="q" placeholder="Search blog title..." value="<%= filters.q %>" />
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-primary" type="submit">Search</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="row g-4">
+    <% blogs.forEach((blog) => { %>
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+          <% if (blog.thumbnailPath) { %>
+            <img src="<%= blog.thumbnailPath %>" class="card-img-top" alt="<%= blog.title %> thumbnail" />
+          <% } else { %>
+            <img src="https://placehold.co/640x360?text=CyberGuruIndia+Blog" class="card-img-top" alt="<%= blog.title %> thumbnail" />
+          <% } %>
+          <div class="card-body d-flex flex-column">
+            <h2 class="h5"><a class="text-decoration-none" href="/blogs/<%= blog.slug %>"><%= blog.title %></a></h2>
+            <p class="text-muted small flex-grow-1"><%= blog.content.slice(0, 140) %>...</p>
+            <div class="d-flex justify-content-between align-items-center small text-muted">
+              <div class="d-flex gap-3">
+                <span>👍 <%= blog.likes %></span>
+                <span>👎 <%= blog.dislikes %></span>
+              </div>
+              <button class="btn btn-sm btn-outline-secondary js-copy-share" type="button" data-share-url="<%= siteBaseUrl %>/blogs/<%= blog.slug %>" aria-label="Share blog" title="Share">🔗</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+
+    <% if (!blogs.length) { %>
+      <div class="col-12"><div class="alert alert-info">No blogs found.</div></div>
+    <% } %>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

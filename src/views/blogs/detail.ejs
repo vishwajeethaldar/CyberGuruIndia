@@ -1,0 +1,92 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+<%- include('../partials/alerts') %>
+
+<main class="container py-4" data-blog-id="<%= blog._id %>">
+  <div class="row g-4">
+    <div class="col-12 col-lg-8">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <h1 class="h3 mb-0"><%= blog.title %></h1>
+        <button class="btn btn-outline-primary btn-sm js-copy-share" type="button" data-share-url="<%= siteBaseUrl %>/blogs/<%= blog.slug %>" aria-label="Share blog">🔗 Share</button>
+      </div>
+
+      <% if (blog.thumbnailPath) { %>
+        <img src="<%= blog.thumbnailPath %>" class="img-fluid rounded border mb-3" alt="<%= blog.title %> thumbnail" />
+      <% } %>
+
+      <p><%= blog.content %></p>
+
+      <div class="d-flex gap-2 align-items-center mb-4">
+        <button class="btn btn-outline-success btn-sm js-blog-vote" data-type="like" data-target-id="<%= blog._id %>">👍 Like (<span class="js-blog-likes"><%= blog.likes %></span>)</button>
+        <button class="btn btn-outline-danger btn-sm js-blog-vote" data-type="dislike" data-target-id="<%= blog._id %>">👎 Dislike (<span class="js-blog-dislikes"><%= blog.dislikes %></span>)</button>
+      </div>
+
+      <section>
+        <h2 class="h4">Discussion</h2>
+        <% if (blog.discussionEnabled) { %>
+          <form action="/blogs/<%= blog.slug %>/comments" method="POST" class="card card-body mb-4">
+            <div class="mb-2">
+              <label class="form-label">Name</label>
+              <input class="form-control" type="text" name="authorName" required maxlength="80" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Message</label>
+              <textarea class="form-control" name="message" rows="3" required maxlength="1000"></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit">Post Comment</button>
+          </form>
+        <% } else { %>
+          <div class="alert alert-warning">Discussion is disabled for this blog.</div>
+        <% } %>
+
+        <% if (commentsTree.length) { %>
+          <div class="vstack gap-3">
+            <% commentsTree.forEach((comment) => { %>
+              <div class="card card-body">
+                <div class="d-flex justify-content-between mb-1">
+                  <strong><%= comment.authorName %></strong>
+                  <small class="text-muted"><%= new Date(comment.createdAt).toLocaleString() %></small>
+                </div>
+                <p class="mb-2"><%= comment.message %></p>
+                <div class="d-flex gap-2 mb-2">
+                  <button class="btn btn-outline-success btn-sm js-blog-comment-vote" data-type="like" data-target-id="<%= comment._id %>">👍 (<span class="count-like"><%= comment.likes %></span>)</button>
+                  <button class="btn btn-outline-danger btn-sm js-blog-comment-vote" data-type="dislike" data-target-id="<%= comment._id %>">👎 (<span class="count-dislike"><%= comment.dislikes %></span>)</button>
+                </div>
+
+                <% if (blog.discussionEnabled) { %>
+                  <form action="/blogs/<%= blog.slug %>/comments" method="POST" class="border rounded p-2 mb-2">
+                    <input type="hidden" name="parentCommentId" value="<%= comment._id %>" />
+                    <div class="row g-2">
+                      <div class="col-md-4"><input class="form-control form-control-sm" type="text" name="authorName" placeholder="Your name" required /></div>
+                      <div class="col-md-6"><input class="form-control form-control-sm" type="text" name="message" placeholder="Reply..." required /></div>
+                      <div class="col-md-2 d-grid"><button class="btn btn-sm btn-primary" type="submit">Reply</button></div>
+                    </div>
+                  </form>
+                <% } %>
+
+                <% if (comment.replies && comment.replies.length) { %>
+                  <div class="ms-3 mt-2 border-start ps-3 vstack gap-2">
+                    <% comment.replies.forEach((reply) => { %>
+                      <div>
+                        <div class="d-flex justify-content-between"><strong><%= reply.authorName %></strong><small class="text-muted"><%= new Date(reply.createdAt).toLocaleString() %></small></div>
+                        <p class="mb-1"><%= reply.message %></p>
+                        <div class="d-flex gap-2">
+                          <button class="btn btn-outline-success btn-sm js-blog-comment-vote" data-type="like" data-target-id="<%= reply._id %>">👍 (<span class="count-like"><%= reply.likes %></span>)</button>
+                          <button class="btn btn-outline-danger btn-sm js-blog-comment-vote" data-type="dislike" data-target-id="<%= reply._id %>">👎 (<span class="count-dislike"><%= reply.dislikes %></span>)</button>
+                        </div>
+                      </div>
+                    <% }) %>
+                  </div>
+                <% } %>
+              </div>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <p class="text-muted">No comments yet.</p>
+        <% } %>
+      </section>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

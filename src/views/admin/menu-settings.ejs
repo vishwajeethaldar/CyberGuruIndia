@@ -1,0 +1,24 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+<%- include('../partials/admin-submenu') %>
+<%- include('../partials/alerts') %>
+
+<main class="container py-4" style="max-width: 700px;">
+  <h1 class="h3 mb-3">Menu Settings</h1>
+
+  <form class="card card-body" method="POST" action="/admin/menu-settings?_method=PUT">
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" id="showVideosMenu" name="showVideosMenu" <%= menuSettings.showVideosMenu ? 'checked' : '' %> />
+      <label class="form-check-label" for="showVideosMenu">Show Videos menu</label>
+    </div>
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" id="showBlogsMenu" name="showBlogsMenu" <%= menuSettings.showBlogsMenu ? 'checked' : '' %> />
+      <label class="form-check-label" for="showBlogsMenu">Show Blogs menu</label>
+    </div>
+    <div>
+      <button class="btn btn-primary" type="submit">Save</button>
+    </div>
+  </form>
+</main>
+
+<%- include('../partials/footer') %>

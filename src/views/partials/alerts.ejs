@@ -1,0 +1,12 @@
+<div class="container mt-3">
+  <% if (flashSuccess && flashSuccess.length) { %>
+    <% flashSuccess.forEach((msg) => { %>
+      <div class="alert alert-success"><%= msg %></div>
+    <% }) %>
+  <% } %>
+  <% if (flashError && flashError.length) { %>
+    <% flashError.forEach((msg) => { %>
+      <div class="alert alert-danger"><%= msg %></div>
+    <% }) %>
+  <% } %>
+</div>

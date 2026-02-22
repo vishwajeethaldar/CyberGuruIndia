@@ -1,0 +1,18 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="container py-5">
+  <h1 class="h3">Validation Error</h1>
+  <ul>
+    <% if (errors && errors.length) { %>
+      <% errors.forEach((error) => { %>
+        <li><%= error.msg %></li>
+      <% }) %>
+    <% } else { %>
+      <li>Invalid request.</li>
+    <% } %>
+  </ul>
+  <a href="javascript:history.back()" class="btn btn-primary">Go Back</a>
+</main>
+
+<%- include('../partials/footer') %>

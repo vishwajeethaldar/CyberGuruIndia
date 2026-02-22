@@ -1,0 +1,20 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+<%- include('../partials/alerts') %>
+
+<main class="container py-5" style="max-width: 500px;">
+  <h1 class="h3 mb-3">Admin Login</h1>
+  <form method="POST" action="/admin/login" class="card card-body shadow-sm">
+    <div class="mb-3">
+      <label class="form-label">Username</label>
+      <input class="form-control" type="text" name="username" required />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      <input class="form-control" type="password" name="password" required />
+    </div>
+    <button class="btn btn-primary" type="submit">Login</button>
+  </form>
+</main>
+
+<%- include('../partials/footer') %>

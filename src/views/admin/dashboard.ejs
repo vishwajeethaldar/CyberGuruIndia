@@ -1,0 +1,66 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+<%- include('../partials/admin-submenu') %>
+<%- include('../partials/alerts') %>
+
+<main class="container py-4">
+  <div class="mb-4">
+    <h1 class="h3 mb-0">Admin Dashboard</h1>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="card card-body"><strong>Videos</strong><span class="display-6"><%= stats.videoCount %></span></div></div>
+    <div class="col-md-3"><div class="card card-body"><strong>Blogs</strong><span class="display-6"><%= stats.blogCount %></span></div></div>
+    <div class="col-md-3"><div class="card card-body"><strong>Comments</strong><span class="display-6"><%= stats.commentCount %></span></div></div>
+    <div class="col-md-3"><div class="card card-body"><strong>Blocked</strong><span class="display-6"><%= stats.blockedComments %></span></div></div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Created</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% videos.forEach((video) => { %>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <img
+                  src="<%= video.thumbnailPath || `https://img.youtube.com/vi/${video.youtubeId}/default.jpg` %>"
+                  alt="<%= video.title %> thumbnail"
+                  width="48"
+                  height="36"
+                  class="rounded border"
+                  style="object-fit: cover;"
+                />
+                <a href="/videos/<%= video.slug %>"><%= video.title %></a>
+                <button
+                  class="btn btn-sm btn-outline-secondary js-copy-share"
+                  type="button"
+                  data-share-url="<%= siteBaseUrl %>/videos/<%= video.slug %>"
+                  aria-label="Share video"
+                  title="Share"
+                >🔗</button>
+              </div>
+            </td>
+            <td><%= video.category ? video.category.name : 'N/A' %></td>
+            <td><%= new Date(video.createdAt).toLocaleDateString() %></td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="/admin/videos/<%= video._id %>/edit">Edit</a>
+              <form class="d-inline" method="POST" action="/admin/videos/<%= video._id %>?_method=DELETE">
+                <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this video?')">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

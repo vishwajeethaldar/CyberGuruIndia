@@ -1,0 +1,39 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+<%- include('../partials/admin-submenu') %>
+<%- include('../partials/alerts') %>
+
+<main class="container py-4">
+  <h1 class="h3 mb-3">Manage Blogs</h1>
+
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Created</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% blogs.forEach((blog) => { %>
+          <tr>
+            <td><a href="/blogs/<%= blog.slug %>"><%= blog.title %></a></td>
+            <td><%= new Date(blog.createdAt).toLocaleDateString() %></td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="/admin/blogs/<%= blog._id %>/edit">Edit</a>
+              <form class="d-inline" method="POST" action="/admin/blogs/<%= blog._id %>?_method=DELETE">
+                <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this blog?')">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+        <% if (!blogs.length) { %>
+          <tr><td colspan="3" class="text-center text-muted">No blogs yet.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

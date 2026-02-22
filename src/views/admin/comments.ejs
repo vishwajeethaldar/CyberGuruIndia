@@ -1,0 +1,80 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+<%- include('../partials/admin-submenu') %>
+<%- include('../partials/alerts') %>
+
+<main class="container py-4">
+  <h1 class="h3 mb-3">Moderate Comments</h1>
+
+  <form class="card card-body mb-3" method="GET" action="/admin/comments">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-8">
+        <label class="form-label">Select Video</label>
+        <select class="form-select" name="videoId" required>
+          <option value="">Choose a video...</option>
+          <% videos.forEach((video) => { %>
+            <option value="<%= video._id %>" <%= String(filters.videoId) === String(video._id) ? 'selected' : '' %>><%= video.title %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-md-4 d-grid">
+        <button class="btn btn-primary">Load Comments</button>
+      </div>
+    </div>
+  </form>
+
+  <% if (!filters.videoId) { %>
+    <div class="alert alert-info">Select a video to manage comments without noise from other videos.</div>
+  <% } %>
+
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Video</th>
+          <th>Author</th>
+          <th>Message</th>
+          <th>Status</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% comments.forEach((comment) => { %>
+          <tr>
+            <td>
+              <% if (comment.videoId) { %>
+                <a href="/videos/<%= comment.videoId.slug %>"><%= comment.videoId.title %></a>
+              <% } else { %>
+                Removed video
+              <% } %>
+            </td>
+            <td><%= comment.authorName %></td>
+            <td><%= comment.message %></td>
+            <td><span class="badge text-bg-<%= comment.status === 'approved' ? 'success' : comment.status === 'blocked' ? 'danger' : 'warning' %>"><%= comment.status %></span></td>
+            <td class="text-end">
+              <% if (comment.status === 'approved') { %>
+                <form class="d-inline" method="POST" action="/admin/comments/<%= comment._id %>/block?_method=PUT">
+                  <button class="btn btn-sm btn-outline-warning">Block</button>
+                </form>
+              <% } else { %>
+                <form class="d-inline" method="POST" action="/admin/comments/<%= comment._id %>/approve?_method=PUT">
+                  <button class="btn btn-sm btn-outline-success">Unblock</button>
+                </form>
+              <% } %>
+              <form class="d-inline" method="POST" action="/admin/comments/<%= comment._id %>?_method=DELETE">
+                <button class="btn btn-sm btn-outline-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+        <% if (!comments.length && filters.videoId) { %>
+          <tr>
+            <td colspan="5" class="text-center text-muted">No comments for this video yet.</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
