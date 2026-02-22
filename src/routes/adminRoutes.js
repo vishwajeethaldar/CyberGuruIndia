@@ -15,6 +15,7 @@ router.post('/videos', upload.single('thumbnail'), validateVideo, adminControlle
 router.get('/videos/:id/edit', adminController.renderVideoEdit);
 router.put('/videos/:id', upload.single('thumbnail'), validateVideo, adminController.updateVideo);
 router.delete('/videos/:id', adminController.deleteVideo);
+router.delete('/videos/:id/thumbnail', adminController.removeVideoThumbnail);
 
 router.get('/blogs', adminController.listBlogsAdmin);
 router.get('/blogs/new', adminController.renderBlogCreate);
@@ -22,6 +23,7 @@ router.post('/blogs', upload.single('thumbnail'), validateBlog, adminController.
 router.get('/blogs/:id/edit', adminController.renderBlogEdit);
 router.put('/blogs/:id', upload.single('thumbnail'), validateBlog, adminController.updateBlog);
 router.delete('/blogs/:id', adminController.deleteBlog);
+router.delete('/blogs/:id/thumbnail', adminController.removeBlogThumbnail);
 
 router.get('/menu-settings', adminController.renderMenuSettings);
 router.put('/menu-settings', adminController.updateMenuSettings);

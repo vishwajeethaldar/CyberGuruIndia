@@ -1,5 +1,6 @@
 const Blog = require('../models/Blog');
 const BlogComment = require('../models/BlogComment');
+const Category = require('../models/Category');
 
 function buildCommentTree(flatComments) {
   const map = new Map();
@@ -24,16 +25,21 @@ function buildCommentTree(flatComments) {
 
 async function listBlogs(req, res, next) {
   try {
-    const { q = '' } = req.query;
+    const { q = '', category = '' } = req.query;
     const filter = {};
     if (q) filter.$text = { $search: q };
+    if (category) filter.category = category;
 
-    const blogs = await Blog.find(filter).sort({ createdAt: -1 });
+    const [blogs, categories] = await Promise.all([
+      Blog.find(filter).populate('category').sort({ createdAt: -1 }),
+      Category.find().sort({ name: 1 }),
+    ]);
 
     return res.render('blogs/index', {
-      title: 'CyberGuruIndia Blogs',
+      title: `${res.locals.siteName} Blogs`,
       blogs,
-      filters: { q },
+      categories,
+      filters: { q, category },
     });
   } catch (error) {
     return next(error);
@@ -42,7 +48,7 @@ async function listBlogs(req, res, next) {
 
 async function blogDetail(req, res, next) {
   try {
-    const blog = await Blog.findOne({ slug: req.params.slug });
+    const blog = await Blog.findOne({ slug: req.params.slug }).populate('category');
     if (!blog) return res.status(404).render('errors/404', { title: 'Blog Not Found' });
 
     const approvedComments = await BlogComment.find({ blogId: blog._id, status: 'approved' }).sort({ createdAt: 1 });

@@ -37,7 +37,7 @@ async function listVideos(req, res, next) {
     ]);
 
     return res.render('videos/index', {
-      title: 'CyberGuruIndia Videos',
+      title: `${res.locals.siteName} Videos`,
       videos,
       categories,
       filters: { q, category },

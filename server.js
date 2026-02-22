@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
     const app = require('./src/app');
 
     app.listen(PORT, () => {
-      console.log(`CyberGuruIndia running on http://localhost:${PORT}`);
+      console.log(`${process.env.SITE_NAME || 'CyberGuruIndia'} running on http://localhost:${PORT}`);
     });
   } catch (error) {
     if (String(error.message).includes('ECONNREFUSED') || String(error.message).includes('Server selection timed out')) {

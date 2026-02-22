@@ -8,13 +8,14 @@
       <div class="d-flex align-items-center gap-2 mb-2">
         <h1 class="h3 mb-0"><%= blog.title %></h1>
         <button class="btn btn-outline-primary btn-sm js-copy-share" type="button" data-share-url="<%= siteBaseUrl %>/blogs/<%= blog.slug %>" aria-label="Share blog">🔗 Share</button>
-      </div>
-
+      </div>      <% if (blog.category) { %>
+        <p class="text-muted mb-2"><span class="badge text-bg-secondary"><%= blog.category.name %></span></p>
+      <% } %>
       <% if (blog.thumbnailPath) { %>
         <img src="<%= blog.thumbnailPath %>" class="img-fluid rounded border mb-3" alt="<%= blog.title %> thumbnail" />
       <% } %>
 
-      <p><%= blog.content %></p>
+      <div class="blog-content mb-3"><%- markdownToHtml(blog.content) %></div>
 
       <div class="d-flex gap-2 align-items-center mb-4">
         <button class="btn btn-outline-success btn-sm js-blog-vote" data-type="like" data-target-id="<%= blog._id %>">👍 Like (<span class="js-blog-likes"><%= blog.likes %></span>)</button>
@@ -47,7 +48,7 @@
                   <strong><%= comment.authorName %></strong>
                   <small class="text-muted"><%= new Date(comment.createdAt).toLocaleString() %></small>
                 </div>
-                <p class="mb-2"><%= comment.message %></p>
+                <div class="mb-2"><%- markdownToHtml(comment.message) %></div>
                 <div class="d-flex gap-2 mb-2">
                   <button class="btn btn-outline-success btn-sm js-blog-comment-vote" data-type="like" data-target-id="<%= comment._id %>">👍 (<span class="count-like"><%= comment.likes %></span>)</button>
                   <button class="btn btn-outline-danger btn-sm js-blog-comment-vote" data-type="dislike" data-target-id="<%= comment._id %>">👎 (<span class="count-dislike"><%= comment.dislikes %></span>)</button>
@@ -69,7 +70,7 @@
                     <% comment.replies.forEach((reply) => { %>
                       <div>
                         <div class="d-flex justify-content-between"><strong><%= reply.authorName %></strong><small class="text-muted"><%= new Date(reply.createdAt).toLocaleString() %></small></div>
-                        <p class="mb-1"><%= reply.message %></p>
+                        <div class="mb-1"><%- markdownToHtml(reply.message) %></div>
                         <div class="d-flex gap-2">
                           <button class="btn btn-outline-success btn-sm js-blog-comment-vote" data-type="like" data-target-id="<%= reply._id %>">👍 (<span class="count-like"><%= reply.likes %></span>)</button>
                           <button class="btn btn-outline-danger btn-sm js-blog-comment-vote" data-type="dislike" data-target-id="<%= reply._id %>">👎 (<span class="count-dislike"><%= reply.dislikes %></span>)</button>

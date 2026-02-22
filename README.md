@@ -46,7 +46,11 @@ Full-stack video showcase and management platform for CyberGuruIndia YouTube con
    ```bash
    npm run seed
    ```
-5. Start development server:
+5. **[Important]** If upgrading from a version without blog categories, run the migration:
+   ```bash
+   node scripts/migrate-blog-categories.js
+   ```
+6. Start development server:
    ```bash
    npm run dev
    ```

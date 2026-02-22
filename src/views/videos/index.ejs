@@ -4,7 +4,7 @@
 
 <main class="container py-4">
   <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
-    <h1 class="h3 mb-0">CyberGuruIndia Videos</h1>
+    <h1 class="h3 mb-0"><%= siteName %> Videos</h1>
     <form class="row g-2" method="GET" action="/videos">
       <div class="col-auto">
         <input type="text" class="form-control" name="q" placeholder="Search title..." value="<%= filters.q %>" />
@@ -35,7 +35,7 @@
           <div class="card-body d-flex flex-column">
             <span class="badge text-bg-secondary align-self-start mb-2"><%= video.category.name %></span>
             <h2 class="h5"><a class="text-decoration-none" href="/videos/<%= video.slug %>"><%= video.title %></a></h2>
-            <p class="text-muted small flex-grow-1"><%= video.description.slice(0, 120) %>...</p>
+            <p class="text-muted small flex-grow-1"><%= stripMarkdown(video.description).slice(0, 120) %>...</p>
             <div class="d-flex justify-content-between align-items-center small text-muted">
               <div class="d-flex gap-3">
                 <span>👍 <%= video.likes %></span>

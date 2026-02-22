@@ -135,9 +135,26 @@ async function deleteVideo(req, res, next) {
   }
 }
 
+async function removeVideoThumbnail(req, res, next) {
+  try {
+    const video = await Video.findById(req.params.id);
+    if (!video) {
+      return res.status(404).json({ success: false, message: 'Video not found' });
+    }
+
+    video.thumbnailPath = '';
+    await video.save();
+
+    return res.json({ success: true, message: 'Thumbnail removed successfully' });
+  } catch (error) {
+    console.error('Error removing thumbnail:', error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
 async function listBlogsAdmin(req, res, next) {
   try {
-    const blogs = await Blog.find().sort({ createdAt: -1 });
+    const blogs = await Blog.find().populate('category').sort({ createdAt: -1 });
     return res.render('admin/blogs', {
       title: 'Manage Blogs',
       blogs,
@@ -147,13 +164,19 @@ async function listBlogsAdmin(req, res, next) {
   }
 }
 
-function renderBlogCreate(req, res) {
-  return res.render('admin/blog-form', {
-    title: 'Add Blog',
-    blog: null,
-    action: '/admin/blogs',
-    method: 'POST',
-  });
+async function renderBlogCreate(req, res, next) {
+  try {
+    const categories = await Category.find().sort({ name: 1 });
+    return res.render('admin/blog-form', {
+      title: 'Add Blog',
+      blog: null,
+      categories,
+      action: '/admin/blogs',
+      method: 'POST',
+    });
+  } catch (error) {
+    return next(error);
+  }
 }
 
 async function createBlog(req, res, next) {
@@ -163,6 +186,7 @@ async function createBlog(req, res, next) {
     await Blog.create({
       title: req.body.title,
       content: req.body.content,
+      category: req.body.category,
       thumbnailPath,
       discussionEnabled: req.body.discussionEnabled === true || req.body.discussionEnabled === 'true' || req.body.discussionEnabled === 'on',
     });
@@ -180,12 +204,17 @@ async function createBlog(req, res, next) {
 
 async function renderBlogEdit(req, res, next) {
   try {
-    const blog = await Blog.findById(req.params.id);
+    const [blog, categories] = await Promise.all([
+      Blog.findById(req.params.id),
+      Category.find().sort({ name: 1 }),
+    ]);
+
     if (!blog) return res.status(404).render('errors/404', { title: 'Blog Not Found' });
 
     return res.render('admin/blog-form', {
       title: 'Edit Blog',
       blog,
+      categories,
       action: `/admin/blogs/${blog._id}?_method=PUT`,
       method: 'POST',
     });
@@ -201,8 +230,11 @@ async function updateBlog(req, res, next) {
 
     blog.title = req.body.title;
     blog.content = req.body.content;
+    blog.category = req.body.category;
     blog.discussionEnabled = req.body.discussionEnabled === true || req.body.discussionEnabled === 'true' || req.body.discussionEnabled === 'on';
 
+
+        console.log(blog, 'blog', req.body.content);
     if (req.file) {
       blog.thumbnailPath = path.posix.join('/uploads', path.basename(req.file.path));
     }
@@ -223,6 +255,23 @@ async function deleteBlog(req, res, next) {
     return res.redirect('/admin/blogs');
   } catch (error) {
     return next(error);
+  }
+}
+
+async function removeBlogThumbnail(req, res, next) {
+  try {
+    const blog = await Blog.findById(req.params.id);
+    if (!blog) {
+      return res.status(404).json({ success: false, message: 'Blog not found' });
+    }
+
+    blog.thumbnailPath = '';
+    await blog.save();
+
+    return res.json({ success: true, message: 'Thumbnail removed successfully' });
+  } catch (error) {
+    console.error('Error removing thumbnail:', error);
+    return res.status(500).json({ success: false, message: error.message });
   }
 }
 
@@ -375,12 +424,14 @@ module.exports = {
   renderVideoEdit,
   updateVideo,
   deleteVideo,
+  removeVideoThumbnail,
   listBlogsAdmin,
   renderBlogCreate,
   createBlog,
   renderBlogEdit,
   updateBlog,
   deleteBlog,
+  removeBlogThumbnail,
   renderMenuSettings,
   updateMenuSettings,
   listCategories,

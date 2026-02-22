@@ -18,7 +18,7 @@
       <div class="ratio ratio-16x9 mb-3">
         <iframe src="https://www.youtube.com/embed/<%= video.youtubeId %>" title="<%= video.title %>" allowfullscreen></iframe>
       </div>
-      <p><%= video.description %></p>
+      <div class="video-description mb-3"><%- markdownToHtml(video.description) %></div>
 
       <div class="d-flex gap-2 align-items-center mb-4">
         <button class="btn btn-outline-success btn-sm js-video-vote" data-type="like" data-target-id="<%= video._id %>">👍 Like (<span class="js-video-likes"><%= video.likes %></span>)</button>
@@ -51,7 +51,7 @@
                   <strong><%= comment.authorName %></strong>
                   <small class="text-muted"><%= new Date(comment.createdAt).toLocaleString() %></small>
                 </div>
-                <p class="mb-2"><%= comment.message %></p>
+                <div class="mb-2"><%- markdownToHtml(comment.message) %></div>
                 <div class="d-flex gap-2 mb-2">
                   <button class="btn btn-outline-success btn-sm js-comment-vote" data-type="like" data-target-id="<%= comment._id %>">👍 (<span class="count-like"><%= comment.likes %></span>)</button>
                   <button class="btn btn-outline-danger btn-sm js-comment-vote" data-type="dislike" data-target-id="<%= comment._id %>">👎 (<span class="count-dislike"><%= comment.dislikes %></span>)</button>
@@ -73,7 +73,7 @@
                     <% comment.replies.forEach((reply) => { %>
                       <div>
                         <div class="d-flex justify-content-between"><strong><%= reply.authorName %></strong><small class="text-muted"><%= new Date(reply.createdAt).toLocaleString() %></small></div>
-                        <p class="mb-1"><%= reply.message %></p>
+                        <div class="mb-1"><%- markdownToHtml(reply.message) %></div>
                         <div class="d-flex gap-2">
                           <button class="btn btn-outline-success btn-sm js-comment-vote" data-type="like" data-target-id="<%= reply._id %>">👍 (<span class="count-like"><%= reply.likes %></span>)</button>
                           <button class="btn btn-outline-danger btn-sm js-comment-vote" data-type="dislike" data-target-id="<%= reply._id %>">👎 (<span class="count-dislike"><%= reply.dislikes %></span>)</button>

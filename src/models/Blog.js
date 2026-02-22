@@ -21,6 +21,11 @@ const blogSchema = new mongoose.Schema(
       trim: true,
       maxlength: 10000,
     },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
+      required: true,
+    },
     thumbnailPath: {
       type: String,
       trim: true,

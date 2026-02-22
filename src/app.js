@@ -10,6 +10,8 @@ const compression = require('compression');
 const morgan = require('morgan');
 const methodOverride = require('method-override');
 const MenuSettings = require('./models/MenuSettings');
+const { stripHtmlTags } = require('./utils/textHelpers');
+const { markdownToHtml, markdownToText } = require('./utils/markdown');
 
 const configurePassport = require('./config/passport');
 const indexRoutes = require('./routes/index');
@@ -65,9 +67,13 @@ app.use(passport.session());
 
 app.use((req, res, next) => {
   res.locals.currentUser = req.user || null;
+  res.locals.siteName = process.env.SITE_NAME || 'CyberGuruIndia';
   res.locals.siteBaseUrl = `${req.protocol}://${req.get('host')}`;
   res.locals.flashSuccess = req.flash('success');
   res.locals.flashError = req.flash('error');
+  res.locals.stripHtmlTags = stripHtmlTags;
+  res.locals.markdownToHtml = markdownToHtml;
+  res.locals.stripMarkdown = markdownToText;
   next();
 });
 
