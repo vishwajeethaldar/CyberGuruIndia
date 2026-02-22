@@ -10,8 +10,8 @@ const compression = require('compression');
 const morgan = require('morgan');
 const methodOverride = require('method-override');
 const cookieParser = require('cookie-parser');
-const { doubleCsrf } = require('csrf-csrf');
 const MenuSettings = require('./models/MenuSettings');
+const { ensureCsrfToken } = require('./middleware/csrf');
 const { stripHtmlTags } = require('./utils/textHelpers');
 const { markdownToHtml, markdownToText } = require('./utils/markdown');
 
@@ -83,30 +83,17 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-const { doubleCsrfProtection, generateToken } = doubleCsrf({
-  getSecret: () => process.env.SESSION_SECRET || 'change-me',
-  cookieName: '__Host-csrf',
-  cookieOptions: {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    path: '/',
-  },
-  getTokenFromRequest: (req) => req.body?._csrf || req.headers['x-csrf-token'],
-});
-
-app.use((req, res, next) => {
-  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return next();
-  return doubleCsrfProtection(req, res, next);
-});
-
 app.use((req, res, next) => {
   res.locals.currentUser = req.user || null;
   res.locals.siteName = process.env.SITE_NAME || 'CyberGuruIndia';
   res.locals.siteBaseUrl = `${req.protocol}://${req.get('host')}`;
   res.locals.flashSuccess = req.flash('success');
   res.locals.flashError = req.flash('error');
-  res.locals.csrfToken = generateToken(res, req);
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
+    res.locals.csrfToken = ensureCsrfToken(req, res);
+  } else {
+    res.locals.csrfToken = '';
+  }
   res.locals.stripHtmlTags = stripHtmlTags;
   res.locals.markdownToHtml = markdownToHtml;
   res.locals.stripMarkdown = markdownToText;

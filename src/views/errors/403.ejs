@@ -1,8 +1,18 @@
 <%- include('../partials/head', { title }) %>
 <%- include('../partials/navbar') %>
-<main class="container py-5">
-  <h1 class="display-6">403 - Forbidden</h1>
-  <p>You do not have access to this page.</p>
-  <a href="/videos" class="btn btn-primary">Back to Videos</a>
+<main class="container py-5" style="max-width: 720px;">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h1 class="h4 mb-2">403 - Access denied</h1>
+      <p class="text-muted mb-3"><%= message || 'You do not have access to this page.' %></p>
+      <% if (typeof errorId !== 'undefined' && errorId) { %>
+        <p class="small text-muted mb-3">Reference: <strong><%= errorId %></strong></p>
+      <% } %>
+      <div class="d-flex gap-2">
+        <a href="/videos" class="btn btn-primary">Back to Videos</a>
+        <a href="/blogs" class="btn btn-outline-secondary">Browse Blogs</a>
+      </div>
+    </div>
+  </div>
 </main>
 <%- include('../partials/footer') %>

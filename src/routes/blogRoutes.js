@@ -1,6 +1,7 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const blogController = require('../controllers/blogController');
+const { csrfProtection } = require('../middleware/csrf');
 const { validateComment, validateBlogSlug, validateBlogSearch } = require('../middleware/validators');
 
 const router = express.Router();
@@ -15,7 +16,7 @@ const interactionLimiter = rateLimit({
 
 router.get('/', validateBlogSearch, blogController.listBlogs);
 router.get('/:slug', validateBlogSlug, blogController.blogDetail);
-router.post('/:slug/comments', interactionLimiter, validateBlogSlug, validateComment, blogController.createBlogComment);
-router.post('/:id/vote', interactionLimiter, blogController.voteBlog);
+router.post('/:slug/comments', interactionLimiter, csrfProtection, validateBlogSlug, validateComment, blogController.createBlogComment);
+router.post('/:id/vote', interactionLimiter, csrfProtection, blogController.voteBlog);
 
 module.exports = router;

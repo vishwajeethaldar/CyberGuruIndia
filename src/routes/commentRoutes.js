@@ -1,6 +1,7 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const commentController = require('../controllers/commentController');
+const { csrfProtection } = require('../middleware/csrf');
 
 const router = express.Router();
 
@@ -12,6 +13,6 @@ const interactionLimiter = rateLimit({
 	message: 'Too many comments or votes from this IP. Please try later.',
 });
 
-router.post('/:id/vote', interactionLimiter, commentController.voteComment);
+router.post('/:id/vote', interactionLimiter, csrfProtection, commentController.voteComment);
 
 module.exports = router;

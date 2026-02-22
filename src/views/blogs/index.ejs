@@ -28,9 +28,13 @@
       <div class="col-12 col-md-6 col-lg-4">
         <div class="card h-100 shadow-sm">
           <% if (blog.thumbnailPath) { %>
-            <img src="<%= blog.thumbnailPath %>" class="card-img-top" alt="<%= blog.title %> thumbnail" />
+            <a href="/blogs/<%= blog.slug %>" class="d-block">
+              <img src="<%= blog.thumbnailPath %>" class="card-img-top" alt="<%= blog.title %> thumbnail" />
+            </a>
           <% } else { %>
-            <img src="https://placehold.co/640x360?text=<%= encodeURIComponent(siteName) %>+Blog" class="card-img-top" alt="<%= blog.title %> thumbnail" />
+            <a href="/blogs/<%= blog.slug %>" class="d-block">
+              <img src="https://placehold.co/640x360?text=<%= encodeURIComponent(siteName) %>+Blog" class="card-img-top" alt="<%= blog.title %> thumbnail" />
+            </a>
           <% } %>
           <div class="card-body d-flex flex-column">
             <h2 class="h5"><a class="text-decoration-none" href="/blogs/<%= blog.slug %>"><%= blog.title %></a></h2>

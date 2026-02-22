@@ -1,6 +1,7 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const authController = require('../controllers/authController');
+const { csrfProtection } = require('../middleware/csrf');
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ const loginLimiter = rateLimit({
 });
 
 router.get('/login', authController.renderLogin);
-router.post('/login', loginLimiter, authController.login);
-router.post('/logout', authController.logout);
+router.post('/login', loginLimiter, csrfProtection, authController.login);
+router.post('/logout', csrfProtection, authController.logout);
 
 module.exports = router;

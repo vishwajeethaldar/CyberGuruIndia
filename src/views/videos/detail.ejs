@@ -16,7 +16,13 @@
       </div>
       <p class="text-muted mb-2"><span class="badge text-bg-secondary"><%= video.category.name %></span></p>
       <div class="ratio ratio-16x9 mb-3">
-        <iframe src="https://www.youtube.com/embed/<%= video.youtubeId %>" title="<%= video.title %>" allowfullscreen></iframe>
+        <iframe
+          src="https://www.youtube.com/embed/<%= video.youtubeId %>"
+          title="<%= video.title %>"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
       </div>
       <div class="video-description mb-3"><%- markdownToHtml(video.description) %></div>
 

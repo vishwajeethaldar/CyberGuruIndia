@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
   <div class="container">
-    <a class="navbar-brand fw-bold" href="/videos"><%= siteName %></a>
+    <a class="navbar-brand fw-bold" href="/videos"><%= typeof siteName !== 'undefined' ? siteName : 'CyberGuruIndia' %></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -12,7 +12,7 @@
         <% if (typeof menuSettings === 'undefined' || !menuSettings || menuSettings.showBlogsMenu) { %>
           <li class="nav-item"><a class="nav-link" href="/blogs">Blogs</a></li>
         <% } %>
-        <% if (currentUser && currentUser.role === 'admin') { %>
+        <% if (typeof currentUser !== 'undefined' && currentUser && currentUser.role === 'admin') { %>
           <li class="nav-item"><a class="nav-link" href="/admin/dashboard">Dashboard</a></li>
           <li class="nav-item">
             <form action="/admin/logout" method="POST">

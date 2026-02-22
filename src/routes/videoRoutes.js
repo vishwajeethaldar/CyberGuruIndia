@@ -3,6 +3,7 @@ const rateLimit = require('express-rate-limit');
 const videoController = require('../controllers/videoController');
 const commentController = require('../controllers/commentController');
 const voteController = require('../controllers/voteController');
+const { csrfProtection } = require('../middleware/csrf');
 const { validateComment, validateSearch, validateVideoSlug } = require('../middleware/validators');
 
 const router = express.Router();
@@ -17,7 +18,7 @@ const interactionLimiter = rateLimit({
 
 router.get('/', validateSearch, videoController.listVideos);
 router.get('/:slug', validateVideoSlug, videoController.videoDetail);
-router.post('/:slug/comments', interactionLimiter, validateVideoSlug, validateComment, commentController.createComment);
-router.post('/:id/vote', interactionLimiter, voteController.voteVideo);
+router.post('/:slug/comments', interactionLimiter, csrfProtection, validateVideoSlug, validateComment, commentController.createComment);
+router.post('/:id/vote', interactionLimiter, csrfProtection, voteController.voteVideo);
 
 module.exports = router;

@@ -85,7 +85,8 @@ function removeThumbnail(videoId) {
     headers: {
       'Content-Type': 'application/json',
       'X-CSRF-Token': csrfToken,
-    }
+    },
+    credentials: 'same-origin',
   })
   .then(response => response.json())
   .then(data => {

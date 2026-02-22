@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const fsPromises = require('fs/promises');
 const multer = require('multer');
-const { fileTypeFromFile } = require('file-type');
+let fileTypeFromFile;
 
 const uploadDir = path.join(process.cwd(), 'public', 'uploads');
 if (!fs.existsSync(uploadDir)) {
@@ -34,6 +34,10 @@ async function validateImageFile(req, res, next) {
   if (!req.file) return next();
 
   try {
+    if (!fileTypeFromFile) {
+      ({ fileTypeFromFile } = await import('file-type'));
+    }
+
     const detected = await fileTypeFromFile(req.file.path);
     const allowed = ['image/png', 'image/jpeg', 'image/webp'];
 

@@ -3,14 +3,19 @@ function notFoundHandler(req, res) {
 }
 
 function errorHandler(err, req, res, next) {
-  console.error(err);
+  const errorId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`.toUpperCase();
+  console.error(`[${errorId}]`, err);
+  res.locals.siteName = res.locals.siteName || 'CyberGuruIndia';
+  res.locals.csrfToken = res.locals.csrfToken || '';
+  res.locals.currentUser = res.locals.currentUser || null;
   if (err.code === 'EBADCSRFTOKEN' || err.name === 'CSRFError') {
     if (req.xhr || req.headers.accept === 'application/json') {
-      return res.status(403).json({ message: 'Invalid CSRF token.' });
+      return res.status(403).json({ message: 'Invalid CSRF token.', errorId });
     }
     return res.status(403).render('errors/403', {
       title: 'Forbidden',
       message: 'Invalid CSRF token. Please refresh the page and try again.',
+      errorId,
     });
   }
 
@@ -21,6 +26,7 @@ function errorHandler(err, req, res, next) {
   return res.status(statusCode).render('errors/500', {
     title: 'Server Error',
     message: process.env.NODE_ENV === 'production' ? 'Something went wrong.' : err.message,
+    errorId,
   });
 }
 

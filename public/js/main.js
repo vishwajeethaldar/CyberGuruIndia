@@ -10,6 +10,7 @@ async function postVote(url, type) {
       'Content-Type': 'application/json',
       'X-CSRF-Token': getCsrfToken(),
     },
+    credentials: 'same-origin',
     body: JSON.stringify({ type }),
   });
 

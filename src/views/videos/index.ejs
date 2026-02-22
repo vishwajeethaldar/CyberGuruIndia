@@ -28,9 +28,13 @@
       <div class="col-12 col-md-6 col-lg-4">
         <div class="card h-100 shadow-sm">
           <% if (video.thumbnailPath) { %>
-            <img src="<%= video.thumbnailPath %>" class="card-img-top" alt="<%= video.title %> thumbnail" />
+            <a href="/videos/<%= video.slug %>" class="d-block">
+              <img src="<%= video.thumbnailPath %>" class="card-img-top" alt="<%= video.title %> thumbnail" />
+            </a>
           <% } else { %>
-            <img src="https://img.youtube.com/vi/<%= video.youtubeId %>/hqdefault.jpg" class="card-img-top" alt="<%= video.title %> thumbnail" />
+            <a href="/videos/<%= video.slug %>" class="d-block">
+              <img src="https://img.youtube.com/vi/<%= video.youtubeId %>/hqdefault.jpg" class="card-img-top" alt="<%= video.title %> thumbnail" />
+            </a>
           <% } %>
           <div class="card-body d-flex flex-column">
             <span class="badge text-bg-secondary align-self-start mb-2"><%= video.category.name %></span>

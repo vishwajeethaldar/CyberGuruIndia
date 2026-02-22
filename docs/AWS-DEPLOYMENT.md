@@ -40,7 +40,7 @@ Example .env:
 ```env
 NODE_ENV=production
 PORT=3000
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/cyberguruindia
+MONGODB_URI=
 SESSION_SECRET=your-super-secret
 ADMIN_SEED_USERNAME=admin
 ADMIN_SEED_PASSWORD=strong-password
